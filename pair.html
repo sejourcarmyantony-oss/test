@@ -1,1 +1,174 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pairing WhatsApp</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #075E54, #128C7E);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 32px 28px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    text-align: center;
+  }
+  h1 {
+    color: #075E54;
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+  p.subtitle {
+    color: #667781;
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+  input {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 16px;
+    margin-bottom: 16px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input:focus { border-color: #128C7E; }
+  button {
+    width: 100%;
+    padding: 14px;
+    background: #128C7E;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  button:hover { background: #075E54; }
+  button:disabled { background: #a0a0a0; cursor: not-allowed; }
+  .result {
+    margin-top: 24px;
+    display: none;
+  }
+  .code-box {
+    background: #f0f2f5;
+    border: 2px dashed #128C7E;
+    border-radius: 10px;
+    padding: 20px;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: #075E54;
+    margin-bottom: 12px;
+    word-break: break-all;
+  }
+  .instructions {
+    text-align: left;
+    color: #444;
+    font-size: 13px;
+    line-height: 1.6;
+    background: #f9f9f9;
+    padding: 14px;
+    border-radius: 8px;
+  }
+  .error {
+    color: #d32f2f;
+    font-size: 14px;
+    margin-top: 12px;
+    display: none;
+  }
+  .loading {
+    display: none;
+    margin-top: 16px;
+    color: #667781;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>🔗 Connexion WhatsApp</h1>
+    <p class="subtitle">Entre ton numéro avec l'indicatif pays pour obtenir ton code de pairing</p>
 
+    <input type="tel" id="phoneNumber" placeholder="Ex: 50912345678" />
+    <button id="submitBtn" onclick="requestCode()">Obtenir le code</button>
+
+    <div class="loading" id="loading">⏳ Génération du code en cours...</div>
+    <div class="error" id="error"></div>
+
+    <div class="result" id="result">
+      <div class="code-box" id="pairCode">----</div>
+      <div class="instructions">
+        <strong>Comment l'utiliser :</strong><br>
+        1. Ouvre WhatsApp sur ton téléphone<br>
+        2. Va dans Paramètres → Appareils connectés<br>
+        3. Touche "Connecter un appareil"<br>
+        4. Choisis "Se connecter avec un numéro" (si disponible)<br>
+        5. Entre ce code
+      </div>
+    </div>
+  </div>
+
+<script>
+async function requestCode() {
+  const numberInput = document.getElementById('phoneNumber');
+  const number = numberInput.value.trim().replace(/[^0-9]/g, '');
+  const btn = document.getElementById('submitBtn');
+  const loading = document.getElementById('loading');
+  const errorEl = document.getElementById('error');
+  const resultEl = document.getElementById('result');
+
+  errorEl.style.display = 'none';
+  resultEl.style.display = 'none';
+
+  if (!number || number.length < 8) {
+    errorEl.textContent = 'Entre un numéro valide avec l\'indicatif pays (ex: 50912345678).';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  loading.style.display = 'block';
+
+  try {
+    // ⚠️ Adapte cette route à celle exposée par ton backend (souvent /code?number=...)
+    const res = await fetch('/code?number=' + encodeURIComponent(number));
+    const data = await res.json();
+
+    loading.style.display = 'none';
+    btn.disabled = false;
+
+    if (data && (data.code || data.pairingCode)) {
+      document.getElementById('pairCode').textContent = data.code || data.pairingCode;
+      resultEl.style.display = 'block';
+    } else {
+      errorEl.textContent = data.message || 'Impossible de générer le code. Vérifie le numéro et réessaie.';
+      errorEl.style.display = 'block';
+    }
+  } catch (err) {
+    loading.style.display = 'none';
+    btn.disabled = false;
+    errorEl.textContent = 'Erreur de connexion au serveur. Réessaie dans quelques instants.';
+    errorEl.style.display = 'block';
+  }
+}
+
+document.getElementById('phoneNumber').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') requestCode();
+});
+</script>
+</body>
+</html>
