@@ -80,7 +80,12 @@
         }
       }
     ],
-    "platform": "android"
+    "platform": "android",
+    "routingInfo": {
+      "type": "Buffer",
+      "data": "CAUIEggN"
+    },
+    "lastAccountSyncTimestamp": 1789045157
   },
-  "updatedAt": "2026-09-10T12:59:05.373Z"
+  "updatedAt": "2026-09-10T12:59:19.546Z"
 }
