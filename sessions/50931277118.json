@@ -199,6 +199,16 @@
           "addressingMode": "pn"
         },
         "messageTimestamp": 1789045489
+      },
+      {
+        "key": {
+          "remoteJid": "50931277118@s.whatsapp.net",
+          "fromMe": true,
+          "id": "AC66993F5442D70167344E18B74A3EE1",
+          "participant": "",
+          "addressingMode": "pn"
+        },
+        "messageTimestamp": 1789045503
       }
     ],
     "nextPreKeyId": 813,
@@ -240,5 +250,5 @@
     "lastAccountSyncTimestamp": 1789045157,
     "myAppStateKeyId": "AAAAAOLz"
   },
-  "updatedAt": "2026-09-10T13:04:50.017Z"
+  "updatedAt": "2026-09-10T13:05:08.048Z"
 }
