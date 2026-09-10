@@ -63,7 +63,7 @@
     ],
     "nextPreKeyId": 813,
     "firstUnuploadedPreKeyId": 813,
-    "accountSyncCounter": 0,
+    "accountSyncCounter": 1,
     "accountSettings": {
       "unarchiveChats": false
     },
@@ -100,5 +100,5 @@
     "lastAccountSyncTimestamp": 1789045157,
     "myAppStateKeyId": "AAAAAOLz"
   },
-  "updatedAt": "2026-09-10T12:59:33.550Z"
+  "updatedAt": "2026-09-10T12:59:51.247Z"
 }
